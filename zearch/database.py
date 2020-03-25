@@ -28,7 +28,7 @@ class Database():
 			file_path = file_index.get(table_name,None)
 			if file_path is None:
 				raise InvalidSchemaException(f"Expected {table_name}.json to exist, but not in directory")
-			tables.append(IndexedTable.load_from_file(table_name, table_schema,file_path))
+			tables.append(IndexedTable.from_file(table_name, table_schema,file_path))
 		return cls(tables)
 
 	@classmethod
@@ -39,7 +39,7 @@ class Database():
 class IndexedTable():
 
 	@classmethod
-	def load_from_file(cls, name, schema, file_path):
+	def from_file(cls, name, schema, file_path):
 		pass
 
 	def __init__(index, *args, **kwargs):

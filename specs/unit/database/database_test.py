@@ -26,12 +26,12 @@ class TestDatabase__from_file_dir():
 	def test_when_given_a_dir_that_does_contain_the_files_listed_by_schema_returns_database_with_tables(self, index_table_mock):
 		schema = {"users":{"primary_key":"_id"}, "organisations":{"primary_key":"_id"}}
 		database = Database.from_file_dir(self.file_dir, schema)
-		expect(database.tables).to(equal([index_table_mock.load_from_file.return_value,index_table_mock.load_from_file.return_value]))
+		expect(database.tables).to(equal([index_table_mock.from_file.return_value,index_table_mock.from_file.return_value]))
 
 	@patch('zearch.database.IndexedTable')
 	def test_when_given_a_dir_that_does_contain_the_files_listed_by_schema_created_tables_with_the_schemas_and_files(self,index_table_mock):
 		schema = {"users":{"primary_key":"_id"},"organisations":{"primary_key":"_id"}}
 		database = Database.from_file_dir(self.file_dir, schema)
 
-		expect(index_table_mock.load_from_file.mock_calls).to(contain(call("users",schema["users"],Path(self.file_dir,"users.json"))))
-		expect(index_table_mock.load_from_file.mock_calls).to(contain(call("organisations",schema["organisations"],Path(self.file_dir,"organisations.json"))))
+		expect(index_table_mock.from_file.mock_calls).to(contain(call("users",schema["users"],Path(self.file_dir,"users.json"))))
+		expect(index_table_mock.from_file.mock_calls).to(contain(call("organisations",schema["organisations"],Path(self.file_dir,"organisations.json"))))
