@@ -1,5 +1,5 @@
 from specs.helper import *
-from zearch.database import Database, InvalidSchemaException
+from zearch.database import Database, InvalidSchemaException, IndexedTable
 from pathlib import Path
 import tempfile
 
@@ -30,3 +30,12 @@ class TestDatabase__from_file_dir():
 
 		expect(index_table_mock.from_file.mock_calls).to(contain(call(name="users",schema=schema["users"],file_path=Path(self.file_dir,"users.json"))))
 		expect(index_table_mock.from_file.mock_calls).to(contain(call(name="organisations",schema=schema["organisations"],file_path=Path(self.file_dir,"organisations.json"))))
+
+
+class TestDatabase__fields_for_table():
+	def setup_method(self):
+		self.table = MagicMock(spec=IndexedTable)
+		self.database=Database(tables=[self.table])
+
+	def test_fields_for_table_asks_the_table_for_the_fields(self):
+		expect(self.database.fields_for_table(self.table.name)).to(equal(self.table.fields.return_value))

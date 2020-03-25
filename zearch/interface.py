@@ -57,18 +57,18 @@ class SearchCommand():
 		questions = [
 		    {
 		        'type': 'list',
-		        'name': 'table',
+		        'name': 'table_name',
 		        'message': 'What table do you want to search on?',
 		        'choices': [table.name for table in database.tables]
 		    },
 		]
-		table = prompt(questions, style=style)["table"]
+		table_name = prompt(questions, style=style)["table_name"]
 		questions = [
 		    {
 		        'type': 'list',
 		        'name': 'field',
 		        'message': 'What field?',
-		        'choices': ['_id','tags','locale']
+		        'choices': database.fields_for_table(table_name)
 		    },
 		]	
 		field = prompt(questions, style=style)["field"]	
@@ -80,7 +80,7 @@ class SearchCommand():
 		    },
 		]
 		value = prompt(questions, style=style)["value"]
-		results = database.search(table, field, value)
+		results = database.search(table_name, field, value)
 		self._print_results(results)
 		return ZearchMainMenu()
 

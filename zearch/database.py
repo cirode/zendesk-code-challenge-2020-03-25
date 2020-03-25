@@ -13,6 +13,9 @@ class Database():
 	def search(self,object_name,field,pattern):
 		return self._table_index[object_name].find_by_field(field, pattern)
 
+	def fields_for_table(self, table_name):
+		return self._table_index[table_name].fields()
+		
 	@classmethod
 	def from_file_dir(cls, file_dir, schema):
 		files = file_dir.glob('*.json')
@@ -30,12 +33,13 @@ class Database():
 		base = os.path.basename(path)
 		return os.path.splitext(base)[0]
 
+
 class IndexedTable():		
 
 	def __init__(self, name,schema):
-		self.name = name
+		self._name = name
 		self._schema = schema
-		self.indexes = {}
+		self._indexes = {}
 		#self._items = {}
 
 	def add(self,item):
@@ -46,8 +50,19 @@ class IndexedTable():
 			self.indexes[key] = self.indexes.get(key,None) or BasicIndex()
 			self.indexes[key].add(item, value)
 
+	def fields(self):
+		return self.indexes.keys()
+
 	def find_by_field(self,field, pattern):
 		return self.indexes[field].get(pattern)
+
+	@property
+	def name(self):
+		return self._name
+
+	@property
+	def indexes(self):
+		return self._indexes
 
 	@property
 	def _pk(self):

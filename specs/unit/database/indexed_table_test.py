@@ -61,3 +61,15 @@ class TestIndexedTable__add():
 			expect(indexes[field].add.mock_calls).to(contain(call(self.first_item,self.first_item[field])))
 
 
+class TestIndexedTable__fields():
+	def setup_method(self):
+		self.file_dir = Path('.','specs','sample_files')
+		self.schema = {"primary_key":"_id"}
+		self.file_name = "users.json"
+		self.table = IndexedTable(name="users",schema=self.schema)
+		self.first_item = get_test_data("users")[0]
+		self.table.add(self.first_item)
+
+	def test_fields_returns_all_fields_for_this_table(self):
+		expect(self.table.fields()).to(equal(self.first_item.keys()))
+
