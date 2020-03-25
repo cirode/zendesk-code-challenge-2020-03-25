@@ -6,6 +6,9 @@ RUN apk add --update \
     bash \
     libffi-dev \
     openssl-dev \
+    libx11-dev \
+    kbd \
+    kmod \
     && rm  -fr /var/cache/apk/*
 
 WORKDIR /application
