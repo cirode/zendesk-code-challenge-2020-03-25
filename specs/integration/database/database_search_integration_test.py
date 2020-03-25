@@ -25,3 +25,7 @@ class TestDatabaseSearchIntegration():
 		expected_results = [item for item in get_test_data("users") if item.get('locale') == searched_locale]
 		result = self.database.search("users","locale",searched_locale)
 		expect(result).to(equal(expected_results))
+
+	def test_search_for_a_user_with_a_non_existing_value_returns_empty_list(self):
+		result = self.database.search("users","_id", 'NOPE!')
+		expect(result).to(equal([]))
