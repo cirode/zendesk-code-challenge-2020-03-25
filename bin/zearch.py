@@ -1,17 +1,12 @@
 #!/usr/bin/env python
+
 import argparse, os
 from zearch import Zearch, Config
 
-def dir_path(string):
-    if os.path.isdir(string):
-        return string
-    else:
-        raise NotADirectoryError(string)
-
 def main():
-	parser = argparse.ArgumentParser(description='Zendesk Search Coding Exercise')
-	parser.add_argument('--file_dir', type=dir_path,
-        help='the firectory where the searc content json files are')
+	parser = argparse.ArgumentParser(description="Zearch, the Zendesk Search Cli")
+	parser.add_argument('--file_dir',
+        help='the firectory where the searc content json files are', required=True)
 	args = parser.parse_args()
 	Zearch(config=Config(args)).run()
 

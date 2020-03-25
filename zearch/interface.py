@@ -1,77 +1,88 @@
-# class UnknownCommand():
-# 	def __init__(self, raw_command):
-# 		self._raw_command = raw_command
+from PyInquirer import style_from_dict, Token, prompt
+import json
 
-# 	def exec(self):
-# 		print(f'\nErrmmm.. not sure what you mean by "{self._raw_command}", try again!')
-# 		return False
+style = style_from_dict({
+    Token.QuestionMark: '#E91E63 bold',
+    Token.Selected: '#673AB7 bold',
+    Token.Answer: '#2196f3 bold'
+})
 
-# class QuitCommand():
-# 	def invocation(self):
-# 		return 'quit'
 
-# 	def describe():
-# 		return "end the madness!"
+class ZearchGuiInterface():
 
-# 	def exec(self,database):
-# 		return True
+	def startup_hook(self):
+		print("Hi! I'm Zearch, the Zendesk Search Cli\n\n")
 
-# class SearchCommand():
+	def run(self, database):
+		next_command = ZearchMainMenu()
+		while next_command is not None:
+			next_command = next_command.run(database)
+		self.shutdown_hook()
 
-# 	def __init__(self, input_cmd=input):
-# 		self._input_cmd = input_cmd
+	def shutdown_hook(self):
+		print("Byeee!")
+
+class ZearchMainMenu():
 	
-# 	def invocation(self):
-# 		pass
+	def __init__(self,known_commands=None):
+		self._known_commands = known_commands or [SearchCommand(), QuitCommand()]
 
-# 	def describe(self):
-# 		return "set the minions a-searching"
-
-# 	def exec(self, database):
-# 		table = self._get_option(database.tables)
-# 		field = self._get_option(fields)
-# 		value = self._input_cmd("Enter search value")
-# 		results = database.search(table, field, value)
-# 		self._print_results(results)
-# 		return False
-
-# 	def _print_results(self, results):
-# 		self._print_cmd(json.dumps(json_object, indent=2))
-
-# 	def _get_table(self, tables):
-# 		for i in range(len(tables)):
-# 			print("Enter ")
-# 		self._input_cmd()
-
-# 	def _get_field(self, fields):
-# 		for i in range(len(tables)):
-# 			print("Enter ")
-# 		self._input_cmd()
+	def run(self, database):
+		questions = [
+		    {
+		        'type': 'list',
+		        'name': 'subcommand',
+		        'message': 'What would you like me to attempt today?',
+		        'choices': [{"name":command.describe(), "value":command} for command in self._known_commands]
+		    }
+		]
+		return prompt(questions, style=style)["subcommand"]
 
 
-# class ZearchInterface():
-# 	def __init__(self,known_commands=[SearchCommand(), QuitCommand()],print_func=print,input_func=input):
-# 		self._input_cmd = input_cmd
-# 		self._command_parser = command_parser
-# 		self._known_commands = known_commands
+class QuitCommand():
 
-# 	def startup_hook(self):
-# 		print("Hi! I'm Zearch, the Zendesk Search Cli")
+	def describe(self):
+		return "Quit! End the madness!"
 
-# 	def get_command(self):
-# 		print("\n\nWhat do you want to do?:")
-# 		for i in range(len(self._known_commands)):
-# 			command = self._known_commands[i]
-# 			invocation = command.invocation() or i
-# 			print(f"- Type '{invocation}' to {command.describe()}\n")
-# 		return self._parse(input())
+	def run(self,database):
+		print('No worries! Catch you later!')
 
-# 	def shutdown_hook(self):
-# 		print("Catchya Next Time!")
+class SearchCommand():
 
-# 	def _parse(self, raw_command):
-# 		try:
-# 			command_index = int(raw_command)
-# 			return self._known_commands[command_index]
-# 		except ValueError,KeyError:
-# 			return UnknownCommand(raw_command)
+	def describe(self):
+		return "Set the minions a-searching"
+
+	def run(self, database):
+		print("Sure!... errm.. let's see here...\n")
+		questions = [
+		    {
+		        'type': 'list',
+		        'name': 'table',
+		        'message': 'What table do you want to search on?',
+		        'choices': [table.name for table in database.tables]
+		    },
+		]
+		table = prompt(questions, style=style)["table"]
+		questions = [
+		    {
+		        'type': 'list',
+		        'name': 'field',
+		        'message': 'What field?',
+		        'choices': ['_id','tags','locale']
+		    },
+		]	
+		field = prompt(questions, style=style)["field"]	
+		questions = [
+		    {
+		        'type': 'input',
+		        'name': 'value',
+		        'message': f'What value for field "{field}"?'
+		    },
+		]
+		value = prompt(questions, style=style)["value"]
+		results = database.search(table, field, value)
+		self._print_results(results)
+		return ZearchMainMenu()
+
+	def _print_results(self, results):
+		print(json.dumps(results, indent=2)+"\n\n")

@@ -31,6 +31,7 @@ To run the "zearch" application
 
 Further discussion
 - wheres the pandas?
+TODO: Go back and test the search methods
 
 Assumptions for speed
 -------

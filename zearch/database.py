@@ -1,16 +1,8 @@
 from collections.abc import Sequence
-from . import ZearchException
+from .exceptions import ZearchException,InvalidSchemaException
 from pathlib import Path
 import os
 import json
-
-
-class DatabaseException(ZearchException):
-	pass
-
-class InvalidSchemaException(DatabaseException):
-	pass
-
 
 class Database():
 
@@ -78,11 +70,12 @@ class BasicIndex():
 		if not self._is_non_str_sequence(key):
 			key = [key]
 		for k in key:
+			k = str(k)
 			self._index[k] = self._index.get(k,None) or []
 			self._index[k].append(item)
 
 	def get(self,key):
-		return self._index.get(key,[])
+		return self._index.get(str(key),[])
 
 	def _is_non_str_sequence(self,obj):
 		return isinstance(obj, Sequence) and not isinstance(obj, str)
