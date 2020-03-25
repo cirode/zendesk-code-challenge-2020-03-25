@@ -36,3 +36,9 @@ zearch --file_dir specs/sample_files
 ```
 
 `NOTE: Zearch indexes the files at startup. There may be slight delay before given the prompts depending on how large the files are`
+
+
+## Further Discussion
+
+#### Factory Methods or factory Objects
+This morning I chose to use factory methods on the Database and IndexedTables rather than opting for a DatabaseFactory class. These sorts of choices are debatable, however in this case, if I were to do this again I would choose a DatabaseFactory object to read from the files and construct the db. The testing would have been slightly easier and I think the code would have been easier to read
