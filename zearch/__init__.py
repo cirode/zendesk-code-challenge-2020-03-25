@@ -33,3 +33,6 @@
 # 			command = interface.get_command()
 # 			cause_exit = command.exec(self._database)
 # 		interface.shutdown_hook()
+
+class ZearchException(Exception):
+	pass
