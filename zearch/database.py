@@ -16,9 +16,10 @@ class Database():
 
 	def __init__(self, tables):
 		self.tables = tables
+		self._table_index = dict([(t.name, t) for t in tables])
 
 	def search(self,object_name,field,pattern):
-		self._tables[object_name].find_by_field(field, pattern)
+		return self._table_index[object_name].find_by_field(field, pattern)
 
 	@classmethod
 	def from_file_dir(cls, file_dir, schema):
@@ -29,7 +30,7 @@ class Database():
 			file_path = file_index.get(table_name,None)
 			if file_path is None:
 				raise InvalidSchemaException(f"Expected {table_name}.json to exist, but not in directory")
-			tables.append(IndexedTable.from_file(table_name, table_schema,file_path))
+			tables.append(IndexedTable.from_file(file_path=file_path,name=table_name, schema=table_schema))
 		return cls(tables)
 
 	@classmethod
@@ -53,8 +54,8 @@ class IndexedTable():
 			self.indexes[key] = self.indexes.get(key,None) or BasicIndex()
 			self.indexes[key].add(item, value)
 
-	def find_by_field(field, pattern):
-		return self._field_indexes[field].find(pattern)
+	def find_by_field(self,field, pattern):
+		return self.indexes[field].get(pattern)
 
 	@property
 	def _pk(self):

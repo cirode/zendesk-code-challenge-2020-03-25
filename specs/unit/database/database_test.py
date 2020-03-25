@@ -28,5 +28,5 @@ class TestDatabase__from_file_dir():
 		schema = {"users":{"primary_key":"_id"},"organisations":{"primary_key":"_id"}}
 		database = Database.from_file_dir(self.file_dir, schema)
 
-		expect(index_table_mock.from_file.mock_calls).to(contain(call("users",schema["users"],Path(self.file_dir,"users.json"))))
-		expect(index_table_mock.from_file.mock_calls).to(contain(call("organisations",schema["organisations"],Path(self.file_dir,"organisations.json"))))
+		expect(index_table_mock.from_file.mock_calls).to(contain(call(name="users",schema=schema["users"],file_path=Path(self.file_dir,"users.json"))))
+		expect(index_table_mock.from_file.mock_calls).to(contain(call(name="organisations",schema=schema["organisations"],file_path=Path(self.file_dir,"organisations.json"))))

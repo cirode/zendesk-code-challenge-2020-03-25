@@ -10,10 +10,8 @@ class TestIndexedTable__from_file():
 		self.file_dir = Path('.','specs','sample_files')
 		self.schema = {"primary_key":"_id"}
 		self.file_name = "users.json"
-		with open(Path(self.file_dir, self.file_name)) as f:
-			users = json.loads(f.read())
-			self.first_item = users[0]
-			self.second_item = users[1]
+		self.first_item = get_test_data("users")[0]
+		self.second_item = get_test_data("users")[1]
 
 	#adding items to table
 	@patch('zearch.database.IndexedTable.__init__', return_value=None)
@@ -38,9 +36,7 @@ class TestIndexedTable__add():
 		self.schema = {"primary_key":"_id"}
 		self.file_name = "users.json"
 		self.table = IndexedTable(name="users",schema=self.schema)
-		with open(Path(self.file_dir, self.file_name)) as f:
-			users = json.loads(f.read())
-			self.first_item = users[0]
+		self.first_item = get_test_data("users")[0]
 
 	#schema testing	
 	def test_when_schema_primary_key_doesnt_exist_in_table_raises_invalid_schema_exception(self):
