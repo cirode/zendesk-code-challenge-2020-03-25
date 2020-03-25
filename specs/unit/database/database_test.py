@@ -1,7 +1,6 @@
 from specs.helper import *
 from zearch.database import Database, InvalidSchemaException
 from pathlib import Path
-import shutil
 import tempfile
 
 
@@ -14,10 +13,6 @@ class TestDatabase__from_file_dir():
 	## Schema Testing
 	def test_when_given_a_dir_that_does_not_contain_the_files_listed_by_schema_raises_invalid_schema_exception(self):
 		schema = {"woops":{"primary_key":"_id"}}
-		expect(lambda : Database.from_file_dir(self.file_dir, schema)).to(raise_error(InvalidSchemaException))
-
-	def test_when_schema_primary_key_doesnt_exist_in_table_raises_invalid_schema_exception(self):
-		schema = {"woops":{"primary_key":"whatnow?"}}
 		expect(lambda : Database.from_file_dir(self.file_dir, schema)).to(raise_error(InvalidSchemaException))
 
 

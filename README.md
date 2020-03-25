@@ -26,3 +26,13 @@ This will boot you into bash, ensuring the correct pathing and libs are installe
 Once in the environment, the repository on your local files sytem will be available to you mounted under "/application"
 
 To run the "zearch" application
+
+
+
+Further discussion
+- wheres the pandas?
+
+Assumptions for speed
+-------
+- The schemas of all objects in the files are the same
+- no need for streaming read of json files
