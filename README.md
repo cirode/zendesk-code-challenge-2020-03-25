@@ -19,7 +19,7 @@ In order to boot into the environment run
 docker-compose run --rm app
 ```
 
-This will boot you into bash, ensuring the correct pathing and libs are installed.
+This will boot you into bash, ensuring the correct pathing and libs are installed ( via poetry ).
 `NOTE: It takes a moment to install the libs into the docker container on boot. Please be patient here :)`
 
 Once in the environment, the repository on your local files sytem will be available to you mounted under "/application"
@@ -37,8 +37,18 @@ zearch --file_dir specs/sample_files
 
 `NOTE: Zearch indexes the files at startup. There may be slight delay before given the prompts depending on how large the files are`
 
+### Tests
+
+I've used Pytest to do the testing. To run them, boot into the docker env and type
+
+```
+pytest
+```
 
 ## Further Discussion
 
 #### Factory Methods or factory Objects
 This morning I chose to use factory methods on the Database and IndexedTables rather than opting for a DatabaseFactory class. These sorts of choices are debatable, however in this case, if I were to do this again I would choose a DatabaseFactory object to read from the files and construct the db. The testing would have been slightly easier and I think the code would have been easier to read
+
+#### Testing of a modal CLI
+That was an interesting challenge. Usually with my clis I tend to be a little more simplistic and stick with argparse, which makes for a much easier to test application ( spin up a process, provide the options, capture the output). Given the example though, I decided to give the modal CLI a try. I'm not 100% happy with the level it tests at, but the Zearch integration test does a decent job of covering 98% of the application I think
