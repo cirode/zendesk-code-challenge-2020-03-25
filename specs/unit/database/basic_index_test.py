@@ -1,7 +1,7 @@
 from specs.helper import *
 from zearch.database import BasicIndex
 
-class TestBasicIndex__get():
+class TestBasicIndex():
 
 	def setup_method(self):
 		self.index = BasicIndex()
@@ -28,3 +28,17 @@ class TestBasicIndex__get():
 		indexed_item = 12345
 		self.index.add(12345,value)
 		expect(self.index.get(value)).to(equal([indexed_item]))
+
+
+	def test_adding_a_list_of_values_allows_searching_by_any_of_those_values(self):
+		value = ['one','two','skip-a-few']
+		indexed_item = 12345
+		self.index.add(12345,value)
+		expect(self.index.get(value[2])).to(equal([indexed_item]))
+		expect(self.index.get(value[1])).to(equal([indexed_item]))
+
+	def test_adding_a_tuple_of_values_allows_searching_by_any_of_those_values(self):
+		value = ('one','two','skip-a-few')
+		indexed_item = 12345
+		self.index.add(12345,value)
+		expect(self.index.get(value[2])).to(equal([indexed_item]))

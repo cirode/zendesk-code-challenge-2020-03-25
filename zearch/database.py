@@ -1,3 +1,5 @@
+from collections.abc import Sequence 
+
 # class Database():
 
 # 	def __init__(self, **kwargs):
@@ -22,14 +24,19 @@
 # 	def find_by_field(field, pattern):
 # 		return self._field_indexes[field].find(pattern)
 
-import pdb
 class BasicIndex():
 	def __init__(self):
 		self._index = {}
 	
 	def add(self,item,key):
-		self._index[key] = self._index.get(key,None) or []
-		self._index[key].append(item)
+		if not self._is_non_str_sequence(key):
+			key = [key]
+		for k in key:
+			self._index[k] = self._index.get(k,None) or []
+			self._index[k].append(item)
 
 	def get(self,key):
 		return self._index.get(key,[])
+
+	def _is_non_str_sequence(self,obj):
+		return isinstance(obj, Sequence) and not isinstance(obj, str)
