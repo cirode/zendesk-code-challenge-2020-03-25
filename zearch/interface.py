@@ -12,8 +12,10 @@ class ZearchGuiInterface():
 
 	def startup_hook(self):
 		print("Hi! I'm Zearch, the Zendesk Search Cli\n\n")
+		print("Excuse me a sec while I get the minions to index those files. Back in a Jiffy!!\n")
 
 	def run(self, database):
+		print("Ok! Right to go!\n\n")
 		next_command = ZearchMainMenu()
 		while next_command is not None:
 			next_command = next_command.run(database)
