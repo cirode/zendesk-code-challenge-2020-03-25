@@ -36,6 +36,7 @@ class TestZearchIntegration():
 				{'q': 'What table do you want to search on?', 		'a': lambda qs,style: {qs[0]["name"]:"users"}},
 				{'q': 'What field?', 								'a': lambda qs,style: {qs[0]["name"]:search_field}},
 				{'q': f'What value for field "{search_field}"?', 	'a':lambda qs,style: {qs[0]["name"]:expected_result[search_field]}},
+				{'q': f'Do you want the linked items inlcuded?', 	'a':lambda qs,style: {qs[0]["name"]:True}},
 				# then quit
 				{'q':'What would you like me to attempt today?', 	'a':lambda qs,style: {qs[0]["name"]:QuitCommand()}}
 			]

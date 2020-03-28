@@ -82,7 +82,15 @@ class SearchCommand():
 		    },
 		]
 		value = prompt(questions, style=style)["value"]
-		results = database.search(table_name, field, value, include_links=True)
+		questions = [
+		    {
+		        'type': 'confirm',
+		        'name': 'links',
+		        'message': f'Do you want the linked items inlcuded?'
+		    },
+		]
+		links = prompt(questions, style=style)["links"]
+		results = database.search(table_name, field, value, include_links=links)
 		self._print_results(results)
 		return ZearchMainMenu()
 
