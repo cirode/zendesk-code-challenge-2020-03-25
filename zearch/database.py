@@ -31,7 +31,7 @@ class Database():
 	def _set_reverse_linked_data(self, result, table):
 		for reverse_link in table.linked_from():
 			linked_table = self._table_index.get(reverse_link.table)
-			results = linked_table.find_by_field(reverse_link.key,result.get(table.pk))
+			results = linked_table.find_by_field(reverse_link.key,result[table.pk])
 			for i,rev_linked_result in enumerate(results):
 				result[f'{reverse_link.name}_{i}'] = rev_linked_result
 		return result
@@ -39,7 +39,9 @@ class Database():
 	def _set_linked_data(self, result, table):
 		for link in table.links_to():
 			linked_table = self._table_index[link.table]
-			result[link.name] = linked_table.find_by_field(linked_table.pk,result.get(link.key))[0]
+			linked_objects = linked_table.find_by_field(linked_table.pk,result.get(link.key))
+			if len(linked_objects) > 0:
+				result[link.name] = linked_objects[0]
 		return result
 
 	@property

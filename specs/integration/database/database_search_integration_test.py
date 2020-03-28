@@ -95,6 +95,14 @@ class TestDatabaseSearchIntegration__multiple_tables():
 		result_org = [value for attr,value in result.items() if re.match('^organisation$',attr)]
 		expect(result_org).to(equal([self.org]))
 
+	def test_include_links_true_searching_for_user_with_no_organization_id_returns_user_with_no_organisation(self):
+		result = self.database.search("users","_id", 16, include_links=True)[0]
+		expect(result.get("organisation")).to(be_none)
+
+	def test_include_links_true_searching_for_user_with_that_has_not_submitted_a_ticket_returns_user_with_no_submitted_tickets(self):
+		result = self.database.search("users","_id", 2, include_links=True)[0]
+		expect(result.get("submitted_ticket_0")).to(be_none)
+
 
 from zearch.database import Database, InvalidSchemaException, IndexedTable, Link, ReverseLink
 ##
