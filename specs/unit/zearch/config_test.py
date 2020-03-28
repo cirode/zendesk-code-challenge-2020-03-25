@@ -10,8 +10,14 @@ class TestConfig():
 	def test_database_schema_returns_the_schema_for_these_files(self):
 		schema = {
 			"organisations": {"primary_key": "_id"},
-			"users": {"primary_key": "_id"},
-			"tickets": {"primary_key": "_id"}
+			"users": {"primary_key": "_id","foreign_keys": {'organization_id': {'name': 'organisation','reverse_name': 'user', 'table': 'organisations'}}},
+			"tickets": {
+				"primary_key": "_id",
+				"foreign_keys": {
+						'assignee_id': {'name': 'assignee', 'reverse_name': 'assigned_ticket', 'table': 'users'},
+						'submitter_id': {'name': 'submitter','reverse_name': 'submitted_ticket', 'table': 'users'}
+					}
+				}
 		}
 		expect(Config({}).database_schema).to(equal(schema))
 

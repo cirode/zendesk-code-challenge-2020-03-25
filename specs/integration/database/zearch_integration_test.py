@@ -16,7 +16,19 @@ class TestZearchIntegration():
 
 	@patch('zearch.interface.prompt')
 	def test_search_for_a_user_by_id_returns_correct_item(self, mock_prompt,capsys):
+		## 
+		# expected result
 		expected_result = get_test_data("users")[2]
+		assigned_tickets = list(filter(None,[ticket for ticket in get_test_data("tickets") if ticket.get('assignee_id') == expected_result['_id']]))
+		submitted_tickets = list(filter(None,[ticket for ticket in get_test_data("tickets") if ticket.get('submitter_id') == expected_result['_id']]))
+		org = [org for org in get_test_data("organisations") if org['_id'] == expected_result['organization_id']][0]
+		expected_result['organisation'] = org
+		for i,assigned_ticket in enumerate(assigned_tickets):
+			expected_result[f'assigned_ticket_{i}'] = assigned_ticket
+		for i,submitted_ticket in enumerate(submitted_tickets):
+			expected_result[f'submitted_ticket_{i}'] = submitted_ticket
+
+
 		search_field = '_id'
 		questions_and_answer_functions = [
 				# first do a search

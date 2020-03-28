@@ -1,11 +1,7 @@
 class ZearchException(Exception):
 	pass
-
-class DatabaseException(ZearchException):
+class InvalidSchemaException(ZearchException):
 	pass
 
-class InvalidSchemaException(DatabaseException):
-	pass
-
-class InvalidConfigException(DatabaseException):
+class InvalidConfigException(ZearchException):
 	pass

@@ -82,7 +82,7 @@ class SearchCommand():
 		    },
 		]
 		value = prompt(questions, style=style)["value"]
-		results = database.search(table_name, field, value)
+		results = database.search(table_name, field, value, include_links=True)
 		self._print_results(results)
 		return ZearchMainMenu()
 

@@ -18,8 +18,14 @@ class Config():
 	def database_schema(self):
 		return {
 			"organisations": {"primary_key": "_id"},
-			"users": {"primary_key": "_id"},#, "foreign_keys": {"organization_id": {"table":"organizations", "name": "organization"}}}
-			"tickets": {"primary_key": "_id"}#, "foreign_keys": {"assignee_id": {"table": "users", "name": "assignee"}, "submitter_id": {"table": "users", "name": "submitter"}}}
+			"users": {"primary_key": "_id","foreign_keys": {'organization_id': {'name': 'organisation','reverse_name': 'user', 'table': 'organisations'}}},
+			"tickets": {
+				"primary_key": "_id",
+				"foreign_keys": {
+						'assignee_id': {'name': 'assignee', 'reverse_name': 'assigned_ticket', 'table': 'users'},
+						'submitter_id': {'name': 'submitter','reverse_name': 'submitted_ticket', 'table': 'users'}
+					}
+				}
 		}
 
 	@property

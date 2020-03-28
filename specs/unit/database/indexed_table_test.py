@@ -1,10 +1,9 @@
 from specs.helper import *
-from zearch.database import IndexedTable, InvalidSchemaException
+from zearch.database import IndexedTable, InvalidSchemaException, Link, ReverseLink
 from pathlib import Path
 import json
 
 class TestIndexedTable__from_file():
-
 
 	def setup_method(self):
 		self.file_dir = Path('.','specs','sample_files')
@@ -28,11 +27,54 @@ class TestIndexedTable__from_file():
 		expect(table.add.mock_calls).to(contain(call(self.second_item)))
 
 
+
+class TestIndexedTable__links_to():
+
+	def test_no_links_returns_empty_list(self):
+		schema = {"primary_key":"_id"}
+		file_name = "users.json"
+		table = IndexedTable(name="users",schema=schema)
+		expect(table.links_to()).to(equal([]))
+
+
+	def test_with_foreign_keys_returns_keys_as_links_to(self):
+		schema = {"primary_key":"_id", "foreign_keys":{'organization_id': {"name": "organisation", "reverse_name":"user", "table": "organisations"}}}
+		file_name = "users.json"
+		table = IndexedTable(name="users",schema=schema)
+		expect(table.links_to()).to(equal([Link(name='organisation',key= "organization_id", reverse_name="user", table= "organisations")]))
+
+
+class TestIndexedTable__linked_from():
+	def setup_method(self):
+		self.schema = {"primary_key":"_id"}
+		self.file_name = "users.json"
+		self.table = IndexedTable(name="users",schema=self.schema)
+
+	def test_no_links_returns_empty_list(self):
+		expect(self.table.linked_from()).to(equal([]))
+
+	def test_when_reverse_link_has_been_added_returns_reverse_link(self):
+		self.table.add_reverse_link(name="assignee",table_name="tickets", foreign_key="assignee_id")
+		expect(self.table.linked_from()).to(equal([ReverseLink(name='assignee',key="assignee_id", table= "tickets")]))
+
+
+class TestIndexedTable__add_reverse_link():
+	def setup_method(self):
+		self.schema = {"primary_key":"_id"}
+		self.file_name = "users.json"
+		self.table = IndexedTable(name="users",schema=self.schema)
+
+	def test_when_link_name_does_not_already_exist_linked_from_returns_link(self):
+		self.table.add_reverse_link(name="assignee",table_name="tickets", foreign_key="assignee_id")
+		expect(self.table.linked_from()).to(equal([ReverseLink(name='assignee',key="assignee_id", table= "tickets")]))
+
+	def test_when_link_name_already_exists_raises_invalid_schema_exception(self):
+		self.table.add_reverse_link(name="assignee",table_name="tickets", foreign_key="assignee_id")
+		expect(lambda : self.table.add_reverse_link(name="assignee",table_name="tickets", foreign_key="assignee_id")).to(raise_error(InvalidSchemaException))
 	
 class TestIndexedTable__add():
 
 	def setup_method(self):
-		self.file_dir = Path('.','specs','sample_files')
 		self.schema = {"primary_key":"_id"}
 		self.file_name = "users.json"
 		self.table = IndexedTable(name="users",schema=self.schema)
@@ -61,9 +103,9 @@ class TestIndexedTable__add():
 			expect(indexes[field].add.mock_calls).to(contain(call(self.first_item,self.first_item[field])))
 
 
+
 class TestIndexedTable__fields():
 	def setup_method(self):
-		self.file_dir = Path('.','specs','sample_files')
 		self.schema = {"primary_key":"_id"}
 		self.file_name = "users.json"
 		self.table = IndexedTable(name="users",schema=self.schema)

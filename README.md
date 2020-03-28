@@ -47,8 +47,11 @@ pytest
 
 ## Further Discussion
 
-#### Factory Methods or factory Objects
+#### Factory Methods or Factory Objects
 This morning I chose to use factory methods on the Database and IndexedTables rather than opting for a DatabaseFactory class. These sorts of choices are debatable, however in this case, if I were to do this again I would choose a DatabaseFactory object to read from the files and construct the db. The testing would have been slightly easier and I think the code would have been easier to read
 
 #### Testing of a modal CLI
 That was an interesting challenge. Usually with my clis I tend to be a little more simplistic and stick with argparse, which makes for a much easier to test application ( spin up a process, provide the options, capture the output). Given the example though, I decided to give the modal CLI a try. I'm not 100% happy with the level it tests at, but the Zearch integration test does a decent job of covering 98% of the application I think
+
+#### Complex config as Dicts, vs a nice DSL
+I've used a schema definition described in dicts in the config. It turned out reasonably complex, and the issue with this is that it puts it back on the users definiing these schemas to get it right, and doesnt help them do it. I'd prefer to create a nice DSL for crafting these schemas, so that settings cant be misspelled etc without nice errors coming back. For this submission thugh, I think the dicts are fine
