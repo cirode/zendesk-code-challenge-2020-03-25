@@ -53,7 +53,9 @@ pytest
 This morning I chose to use factory methods on the Database and IndexedTables rather than opting for a DatabaseFactory class. These sorts of choices are debatable, however in this case, if I were to do this again I would choose a DatabaseFactory object to read from the files and construct the db. The testing would have been slightly easier and I think the code would have been easier to read
 
 #### Testing of a modal CLI
-That was an interesting challenge. Usually with my clis I tend to be a little more simplistic and stick with argparse, which makes for a much easier to test application ( spin up a process, provide the options, capture the output). Given the example though, I decided to give the modal CLI a try. I'm not 100% happy with the level it tests at, but the Zearch integration test does a decent job of covering 98% of the application I think. It just doesnt test the intergration with PyInquirer.. i'd much rather it did that too
+That was an interesting challenge. Usually with my clis I tend to be a little more simplistic and stick with argparse, which makes for a much easier to test application ( spin up a process, provide the options, capture the output). Given the example though, I decided to give the modal CLI a try. I'm not 100% happy with the level it tests at, but the Zearch integration test does a decent job of covering 98% of the application I think. It just doesnt test the integration with PyInquirer.. i'd much rather it did that too. 
+
+In order to do that though, I'd need to spin up a seperate process and push keyboard commands through to it. That would take more digging than I'm wanting to dedicate to this project. For a production system it would be worth looking into, or double checking that we want a model GUI :)
 
 #### Complex config as Dicts, vs a nice DSL
 I've used a schema definition described in dicts in the config. It turned out reasonably complex, and the issue with this is that it puts it back on the users definiing these schemas to get it right, and doesnt help them do it. I'd prefer to create a nice DSL for crafting these schemas, so that settings cant be misspelled etc without nice errors coming back. For this submission thugh, I think the dicts are fine
@@ -62,3 +64,6 @@ I've used a schema definition described in dicts in the config. It turned out re
 Ahhhh! the old connundrum, and I found myself deliberating here as well. Not everything here is unit tested, some methods, I have opted to test via localised integration tests as the mocking was getting pretty onerous. In general, this is a sign that the modelling could be better (see DatabaseFactory vs factory methods above). I've spent enough time though, so I think i'll leave it as is. I'd be interested to see how others have modelled it
 
 While I'm chatting about integration vs unit: There is a tradeoff between too much unit testing making the code resistent to change, and too little unit testing making the tests take ages to run, and the errors untraceable. I like to skate that line. Happy to chat this through
+
+#### Testing Interfaces
+I'm of the opinion that the exact wording etc of guis should be able to change without test modification. You dont want to make it hard to change things, just be assured that the functionality you're expecting is there. Therefore my UI tests try to test at that level. I think their appropriate
