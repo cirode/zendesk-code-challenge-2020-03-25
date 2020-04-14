@@ -32,7 +32,7 @@ To run the "zearch" application simply provide a directory of json files to the 
 For example: to use the data given as part of the excercise
 
 ```
-zearch --file_dir specs/sample_files
+	
 ```
 
 `NOTE: Zearch indexes the files at startup. There may be slight delay before given the prompts depending on how large the files are`

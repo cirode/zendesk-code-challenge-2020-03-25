@@ -17,7 +17,9 @@ class Database():
 		if include_links:
 			return [self._set_reverse_linked_data(self._set_linked_data(result, table), table) for result in results]
 		return results
-			
+
+	def search_many(self, object_name,field,patterns, include_links=False):
+		return [result for pattern in patterns for result in self.search(object_name, field, pattern) ]
 
 	def fields_for_table(self, table_name):
 		return self._table_index[table_name].fields()

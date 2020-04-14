@@ -1,5 +1,6 @@
 from PyInquirer import style_from_dict, Token, prompt
 import json
+import re
 
 style = style_from_dict({
     Token.QuestionMark: '#E91E63 bold',
@@ -7,6 +8,12 @@ style = style_from_dict({
     Token.Answer: '#2196f3 bold'
 })
 
+class SearchPatternTokeniser():
+	def __init__(self, regex_pattern='\sOR\s'):
+		self._regex_pattern = regex_pattern
+	
+	def parse(self, pattern):
+		return re.split(self._regex_pattern,str(pattern))
 
 class ZearchGuiInterface():
 
@@ -90,7 +97,8 @@ class SearchCommand():
 		    },
 		]
 		links = prompt(questions, style=style)["links"]
-		results = database.search(table_name, field, value, include_links=links)
+		patterns = SearchPatternTokeniser().parse(value)
+		results = database.search_many(table_name, field, patterns, include_links=links)
 		self._print_results(results)
 		return ZearchMainMenu()
 

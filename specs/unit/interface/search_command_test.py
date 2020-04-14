@@ -8,7 +8,7 @@ class TestSearchCommand():
 
 	def setup_method(self):
 		self.database = MagicMock(spec=Database)
-		self.database.search.return_value = {"result": "yeah"}
+		self.database.search_many.return_value = {"result": "yeah"}
 
 	def test_describe_returns_a_string_describing_the_command(self):
 		expect(SearchCommand().describe().lower()).to(contain('search'))
@@ -18,11 +18,21 @@ class TestSearchCommand():
 		mock_prompt.side_effect = [{"table_name": "table1"}, {"field": "_id"},{"value": "1"},{"links": True}]
 		expect(SearchCommand().run(self.database)).to(be_a(ZearchMainMenu))
 
+
 	@patch('zearch.interface.prompt')
-	def test_run_calls_database_search_with_the_results_of_the_questions(self, mock_prompt):
+	@patch('zearch.interface.SearchPatternTokeniser')
+	def test_run_calls_pattern_tokeniser(self, pattern_tokeniser, mock_prompt):
+		mock_prompt.side_effect = [{"table_name": "table1"}, {"field": "somethinginteresting"}, {"value": "hmmmm"},{"links": 'woop'}]
+		SearchCommand().run(self.database)
+		expect(pattern_tokeniser.return_value.parse.mock_calls).to(contain(call("hmmmm")))
+
+
+	@patch('zearch.interface.prompt')
+	@patch('zearch.interface.SearchPatternTokeniser')
+	def test_run_calls_database_search_many_with_the_results_of_the_pattern_tokeniser(self, pattern_tokeniser, mock_prompt):
 		mock_prompt.side_effect = [{"table_name": "table1"}, {"field": "somethinginteresting"},{"value": "hmmmm"},{"links": 'woop'}]
 		SearchCommand().run(self.database)
-		expect(self.database.search.mock_calls).to(contain(call("table1", "somethinginteresting", "hmmmm", include_links='woop')))
+		expect(self.database.search_many.mock_calls).to(contain(call("table1", "somethinginteresting", pattern_tokeniser.return_value.parse.return_value, include_links='woop')))
 
 
 	@patch('zearch.interface.prompt')
@@ -49,5 +59,5 @@ class TestSearchCommand():
 	def test_run_pretty_prints_the_results(self, mock_prompt, mock_json):
 		mock_prompt.side_effect = [{"table_name": "table1"}, {"field": "somethinginteresting"},{"value": "hmmmm"},{"links": True}]
 		SearchCommand().run(self.database)
-		expect(mock_json.dumps.mock_calls).to(contain(call(self.database.search.return_value, indent=2)))
+		expect(mock_json.dumps.mock_calls).to(contain(call(self.database.search_many.return_value, indent=2)))
 
